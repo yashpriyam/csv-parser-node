@@ -1,21 +1,42 @@
-function ConvertToCSV(objArray) {
-    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-    var str = '';
+const createWriteStream = require("fs").createWriteStream;
+const createReadStream = require("fs").createReadStream;
+const Transform = require("stream").Transform;
 
-    for (var i = 0; i < array.length; i++) {
-        var line = '';
-        for (var index in array[i]) {
-            if (line != '') line += ','
+function jsonToCSV(header, paths) {
+  return new Promise(resolve => {
+    const read = createReadStream(paths.in, {
+      encoding: "utf-8"
+    });
 
-            line += array[i][index];
-        }
+    const transform = new Transform();
 
-        str += line + '\r\n';
-    }
+    transform._transform = (chunk, _, done) => {
+      const rows = chunk
+        .toString()
+        .replace(/("\w{1,}":)|[\r\n\s{[\]]/g, "")
+        .replace(/},|}/g, "\n");
 
-    return str;
+      done(null, rows);
+    };
+
+    const writer = createWriteStream(paths.out);
+
+    writer.on("open", () => writer.write(header.join(",") + "\n"));
+    writer.on("close", () => resolve());
+
+    read.pipe(transform).pipe(writer);
+  });
 }
 
-const jsonFile = require("../package.json")
-console.log(ConvertToCSV(jsonFile));
+const header = []
+
+jsonToCSV(header, {
+    in: "./package.json",
+    out: "./new.csv"
+})
+.then(x => console.log(x))
+.catch(x => console.log(x))
+
+// module.exports = jsonToCSV;
+
 
