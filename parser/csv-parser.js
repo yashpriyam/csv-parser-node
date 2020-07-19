@@ -1,12 +1,14 @@
 const { Transform } = require("stream");
 
 const defaults = {
+  escape: '"',
+  quote: '"',
   headers: false,
   mapHeaders: ({ header }) => header,
   newline: "\n",
   separator: ",",
   skipComments: false,
-  //   maxRowBytes: Number.MAX_SAFE_INTEGER,
+  maxRowBytes: Number.MAX_SAFE_INTEGER,
 };
 
 class CsvParser extends Transform {
@@ -14,13 +16,14 @@ class CsvParser extends Transform {
     super({ objectMode: true, highWaterMark: 16 });
     const options = { ...defaults, ...opts };
 
-    for (const key of ["newline", "separator"]) {
+    for (const key of ["newline", "quote", "separator"]) {
       [options[key]] = Buffer.from(options[key]);
     }
+
     this.state = {
       lineNumber: 0,
       previousEnd: 0,
-      //   rowLength: 0,
+      rowLength: 0,
     };
 
     this._prev = null;
@@ -63,7 +66,12 @@ class CsvParser extends Transform {
   }
 
   parseValue(buffer, start, end) {
-    return buffer.toString("utf-8", start, end);
+    const { escape, quote } = this.options
+    if (buffer[start] === quote && buffer[end - 1] === quote) {
+      start++
+      end--
+    }
+    return buffer.toString("utf-8", start, end).replace(escape, "");
   }
 
   writeRow(cells) {
@@ -105,15 +113,15 @@ class CsvParser extends Transform {
 
     for (let i = start; i < bufferLength; i++) {
       const chr = buffer[i];
-      //   this.state.rowLength++;
-      //   if (this.state.rowLength > this.options.maxRowBytes) {
-      //     return cb(new Error("Row exceeds the maximum size"));
-      //   }
+      this.state.rowLength++;
+      if (this.state.rowLength > this.options.maxRowBytes) {
+        return cb(new Error("Row exceeds the maximum size"));
+      }
       // Parse if reach end of line
       if (chr === this.options.newline) {
         this.parseLine(buffer, this.state.previousEnd, i + 1);
         this.state.previousEnd = i + 1;
-        // this.state.rowLength = 0;
+        this.state.rowLength = 0;
       }
     }
 
