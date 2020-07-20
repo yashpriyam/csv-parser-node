@@ -6,7 +6,7 @@ describe('testing the csv-parser', () => {
     let options = {};
     let callback = (error, data) => data;
     let a = parse(url, options, callback);
-    console.log(a.constructor.funtion);
+    console.log(a);
     expect(typeof a).toBe('object');
   });
 
@@ -74,3 +74,4 @@ describe('testing the csv-parser', () => {
 // toCsv(url, {skipComments: "#", headers: true})
 // .then(res => console.log(res))
 // .catch(error => console.log(error))
+

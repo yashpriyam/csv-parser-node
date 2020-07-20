@@ -44,7 +44,7 @@ exports.toJson = async (input, options = {}, cb) => {
     ReadStream.pipe(csvParse(options))
       .on("data", (data) => results.push(data))
       .on("end", () => {
-        results = JSON.stringify(results);
+        results = JSON.parse(JSON.stringify(results));
         if (typeof cb == "undefined") {
           resolve(results);
         } else {
@@ -73,7 +73,6 @@ exports.toCsv = async (input, options = {}, cb) => {
     ReadStream.pipe(jsonToCsv(options))
       .on("data", (data) => results.push(data))
       .on("end", () => {
-        // results = jsonToCsv(results);
         if (typeof cb == "undefined") {
           resolve(results);
         } else {
