@@ -1,11 +1,12 @@
-const { parse } = require("../index");
+const { parse, toJson, toCsv } = require("../index");
 
 describe('testing the csv-parser', () => {
-  test('testing csv string using headers', () => {
+  test('type check of the return value of parser', () => {
     let url = "field_1,field_2,field_3\naaa,bbb,ccc\nxxx,yyy,zzz\n";
     let options = {};
     let callback = (error, data) => data;
     let a = parse(url, options, callback);
+    console.log(a.constructor.funtion);
     expect(typeof a).toBe('object');
   });
 
@@ -59,3 +60,17 @@ describe('testing the csv-parser', () => {
     expect(data).toStrictEqual([ [ 'NAME', 'AGE' ], [ 'Daffy Duck', '24' ], [ 'Bugs Bunny', '22' ] ]);
   });
 });
+
+
+// url = "/Users/yashpriyam/Downloads/csv-parser-node-master/data/sample.json";
+
+// toCsv(url, {}, (error, data) => {
+//   // console.log(error);
+//   console.log(data);
+// });
+
+// url = "/Users/yashpriyam/Downloads/csv-parser-node-master/data/sample.json";
+
+// toCsv(url, {skipComments: "#", headers: true})
+// .then(res => console.log(res))
+// .catch(error => console.log(error))

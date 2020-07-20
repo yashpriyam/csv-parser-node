@@ -1,7 +1,7 @@
 {
   "name": "node-csv-parser",
   "version": "1.0.0",
-  "description": "\"This is a package which converts CSV text input into arrays or objects using streams.\"",
+  "description": "This is a package which converts CSV text input into arrays or objects using streams.",
   "main": "index.js",
   "scripts": {
     "test": "jest"
