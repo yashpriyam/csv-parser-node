@@ -11,7 +11,7 @@ const defaults = {
   maxRowBytes: Number.MAX_SAFE_INTEGER,
 };
 
-class CsvParser extends Transform {
+class JsonParser extends Transform {
   constructor(opts = {}) {
     super({ objectMode: true, highWaterMark: 16 });
     const options = { ...defaults, ...opts };
@@ -140,4 +140,4 @@ class CsvParser extends Transform {
   }
 }
 
-module.exports = (opts) => new CsvParser(opts);
+module.exports = (opts) => new JsonParser(opts);
