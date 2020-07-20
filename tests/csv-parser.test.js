@@ -61,17 +61,3 @@ describe('testing the csv-parser', () => {
   });
 });
 
-
-// url = "/Users/yashpriyam/Downloads/csv-parser-node-master/data/sample.json";
-
-// toCsv(url, {}, (error, data) => {
-//   // console.log(error);
-//   console.log(data);
-// });
-
-// url = "/Users/yashpriyam/Downloads/csv-parser-node-master/data/sample.json";
-
-// toCsv(url, {skipComments: "#", headers: true})
-// .then(res => console.log(res))
-// .catch(error => console.log(error))
-
